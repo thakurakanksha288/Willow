@@ -12,9 +12,19 @@ Run:
 """
 
 import os
+import sys
 import tempfile
 import json
 from pathlib import Path
+
+# Ensure directory is on sys.path regardless of execution working directory
+_BASE_DIR = Path(__file__).resolve().parent
+if str(_BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(_BASE_DIR))
+
+from dotenv import load_dotenv
+load_dotenv(_BASE_DIR / ".env")
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
@@ -34,6 +44,7 @@ from extraction.parser import parse_extraction_output, parse_ingredient_list
 from classifier import classify_product
 from off_service import search_by_name, lookup_by_barcode, extract_off_data, compute_blended_score
 from image_quality import check_image_quality
+from routes.analysis_routes import analysis_bp
 
 # Initialize database schema and seed data
 init_db()
@@ -41,6 +52,9 @@ init_db()
 app = Flask(__name__)
 # Enable CORS for Flutter app communication across local devices / web / desktop
 CORS(app, resources={r"/*": {"origins": "*"}})
+
+# Register AI Analysis Blueprint
+app.register_blueprint(analysis_bp)
 
 ALLOWED_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB limit
