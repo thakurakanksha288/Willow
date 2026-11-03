@@ -1,0 +1,62 @@
+Willow Food Safety Scanner & AI Analysis Test Cases,,,,,,,,,,,
+"Comprehensive test case document for Software Engineering 5th Semester Lab / Project Evaluation.",,,,,,,,,,,
+Project name,Willow Food Safety Scanner,Class / roll no.,5th Sem / 1024160001,App version,2.0.0,Environment,"Windows 11, Python 3.14, Flask, Flutter 3.x",Execution date,2026-11-04,,,
+,,,,,,,,,,,
+Test case ID,Module,Scenario / objective,Test type,Preconditions,Test data,Test steps,Expected result,Actual result,Status,Priority,Evidence / defect ID
+WLW-OCR-001,OCR Extraction,Extract verbatim ingredient list and FSSAI license number from packaged food image,Positive,"Backend API server running on port 5000. Gemini Vision / Tesseract engine accessible.","Image: biscuit_label.jpg (Clear photo with ingredient panel and 14-digit FSSAI number: 10012011000123)","1. Send POST request to /api/extract with multipart/form-data image file.
+2. Verify HTTP response status code.
+3. Inspect parsed ingredients array.
+4. Verify extraction of fssai_number and confidence score.","HTTP 200 OK. Returns parsed ingredients list with >= 4 items, valid 14-digit fssai_number, and confidence score >= 0.70. No OCR error thrown.",HTTP 200 OK. Extracted 5 ingredients and valid FSSAI license number.,Passed,High,LOG-EXTRACT-01
+WLW-IMG-002,Image Quality,Reject low-quality or blurry image and prompt user to retake photo,Negative,Backend image pre-processing quality analyzer active.,Image: blurry_dark_sample.jpg (Laplacian variance < 100 blur score; brightness < 40),"1. Send POST request to /api/extract with blurry/dark image file.
+2. Read HTTP response code and error payload.
+3. Check retake_required flag and quality suggestions.",HTTP 422 Unprocessable Entity. Response contains 'retake_required': true with quality issues and actionable suggestions (e.g. improve lighting or focus).,HTTP 422 returned. retake_required: True with suggestions.,Passed,High,LOG-IMG-02
+WLW-CLS-003,Deterministic Classifier,Classify ingredients against curated FSSAI database and calculate health score,Positive,SQLite database initialized with standard additives and alias mappings.,"Product: 'Cream Biscuits'
+Ingredients: ['Refined Wheat Flour', 'Sugar', 'Palm Oil', 'Tartrazine', 'Sodium Benzoate']","1. Send POST request to /api/analyze with product name and ingredient list.
+2. Check flagged ingredients array.
+3. Verify calculated risk score and score label.
+4. Check penalty deductions for Tartrazine and Palm Oil.","HTTP 200 OK. Tartrazine, Palm Oil, and Sodium Benzoate identified as flagged additives. Risk score penalized to <= 40/100 with label 'High Risk' or 'Caution'.",HTTP 200 OK. 3 additives flagged. Score: 38/100 (Caution).,Passed,High,LOG-CLS-03
+WLW-CAT-004,Category Fallback,Provide category risk profile estimate for unbranded/loose regional food without ingredients,Positive / Fallback,Database contains category keywords and baseline generic risk profiles.,"Product: 'Loose Samosa'
+Ingredients: [] (Empty list)
+Manual category: null","1. Send POST to /api/analyze with empty ingredients list and product name 'Loose Samosa'.
+2. Verify category detection.
+3. Check fallback flags and warning note.",HTTP 200 OK. Category auto-detected as 'Namkeen / Fried Snacks'. 'is_fallback': true with cautionary note explaining lack of exact label.,HTTP 200 OK. is_fallback: True. Detected Fried Snacks profile.,Passed,Medium,LOG-CAT-04
+WLW-OFF-005,Open Food Facts,Enrich analysis with Open Food Facts Nutri-Score and NOVA processing group,Positive,Internet connectivity available. Open Food Facts API accessible.,"Barcode: '737628064502' or Product Name: 'Oreo Original'","1. Send POST to /api/off/lookup with product name or barcode.
+2. Verify Nutri-Score grade ('a' through 'e').
+3. Verify NOVA processing classification (1 to 4).
+4. Verify nutrient breakdown per 100g.",HTTP 200 OK. Returns 'found': true with nutriscore_grade ('d' or 'e'), NOVA group 4 (ultra-processed), and nutrients map.,HTTP 200 OK. Found product. NutriScore: d. NOVA: 4.,Passed,Medium,LOG-OFF-05
+WLW-GEM-006,Gemini AI Safety,Perform AI evaluation of hazardous ingredients with dosage dependency and precautions,Positive,GEMINI_API_KEY loaded. Gemini GenAI SDK initialized.,"Ingredients: ['Refined Wheat Flour', 'Palm Oil', 'TBHQ', 'INS 102', 'High Fructose Corn Syrup']","1. Send POST to /api/analyze-product with ingredient array.
+2. Verify status is 'success'.
+3. Inspect harmful_ingredients objects for scientific explanation, risk_level, dose_dependency, and precautions.",HTTP 200 OK. Detailed evidence-based assessments returned for TBHQ and INS 102. dose_dependency is boolean. precautions give clear consumer guidance.,HTTP 200 OK. Scientific explanation and dosage dependency returned.,Passed,High,LOG-GEM-06
+WLW-MAC-007,Macronutrient Safety,Ensure numerical macronutrients are strictly null when no nutrition label is provided,Negative / Boundary,Gemini Analysis Layer active. Anti-hallucination constraint enforced in system prompt.,"Ingredients: ['Sugar', 'Refined Wheat Flour', 'Vegetable Oil']
+nutrition_data: null","1. Send POST to /api/analyze-product with ingredients and nutrition_data=null.
+2. Inspect macronutrients object in product_analysis.
+3. Verify all numerical macronutrient keys (calories, carbs, protein, fats, sugars).",HTTP 200 OK. calories_kcal, carbohydrates_g, protein_g, total_fat_g, sugars are strictly null. data_source is 'not_available'. No fabricated numbers.,HTTP 200 OK. All numerical macronutrients are null. No hallucinated values.,Passed,Critical,LOG-MAC-07
+WLW-MAC-008,Macronutrient Population,Populate exact numerical macronutrients when nutrition facts panel data is supplied,Positive,Gemini Analysis Layer active.,"Ingredients: ['Whole Wheat Flour', 'Water', 'Yeast', 'Salt']
+nutrition_data: {'calories_kcal': 240, 'carbohydrates_g': 48.0, 'protein_g': 9.0, 'total_fat_g': 1.5, 'dietary_fibre_g': 6.0, 'total_sugar_g': 3.0}","1. Send POST to /api/analyze-product with ingredients and populated nutrition_data map.
+2. Verify macronutrients values match supplied label.
+3. Check data_source is 'nutrition_label'.",HTTP 200 OK. Numerical macronutrients match input values exactly (calories_kcal: 240, protein_g: 9.0). data_source is 'nutrition_label'.,HTTP 200 OK. Calories populated as 240.0. data_source: nutrition_label.,Passed,High,LOG-MAC-08
+WLW-ALT-009,AI Healthier Swaps,Generate context-aware healthier food alternatives eliminating original harmful additives,Positive,"Backend API active. Gemini model configured (gemini-3.5-flash-lite).","Product: 'Fruit Cream Biscuits'
+Category: 'Biscuits & Cookies'
+Flagged: ['Palm Oil', 'Tartrazine', 'Refined Wheat Flour']
+Current score: 38","1. Send POST to /api/ai-alternatives with product details and flagged additives.
+2. Verify returned alternatives list.
+3. Verify each alternative has higher health score, why_healthier explanation, avoided_ingredients list, and grocery tips.",HTTP 200 OK. Returns 3 to 5 realistic healthier swaps (e.g. Slurrp Farm Millet Cookies, Whole grain biscuits) with score >= 75/100, avoided ingredients (zero palm oil/tartrazine), and practical grocery tips.,HTTP 200 OK. 4 alternatives returned. Scores >= 85/100. Practical grocery tips included.,Passed,High,LOG-ALT-09
+WLW-RES-010,Resilience & Fallback,Gracefully fall back to local safety database when Gemini API encounters quota limit or timeout,Negative / Resilience,"Backend API server running. Gemini API simulated with invalid key or forced network disconnect.","Ingredients: ['Refined Wheat Flour', 'Sugar', 'Palm Oil', 'Tartrazine']
+Simulated: GEMINI_API_KEY revoked / offline","1. Revoke GEMINI_API_KEY or simulate 429 quota exhaustion.
+2. Send POST to /api/analyze-product and /api/ai-alternatives.
+3. Check HTTP status code and response payload.",HTTP 200 OK. API does NOT crash (no 500 error). Returns status='fallback' with local FSSAI-database analysis and curated swaps. Frontend displays seamlessly.,HTTP 200 OK. status: fallback. Local safety DB used. Zero server crashes.,Passed,Critical,LOG-RES-10
+WLW-SEC-011,User Authentication,Enforce secure user registration with PBKDF2 password hashing and JWT token issuance,Security,SQLite database active with users table schema.,"Username: 'test_user_2026'
+Email: 'test2026@willow.app'
+Password: 'SecurePassword@123'","1. Send POST to /api/auth/register with user payload.
+2. Inspect database record password_hash.
+3. Send POST to /api/auth/login with credentials.
+4. Verify JWT token format and protected route /api/auth/me access.",HTTP 201 Created on registration. Password stored as salted PBKDF2 hash (not plaintext). Login returns HTTP 200 with valid JWT Bearer token.,HTTP 201 created. PBKDF2 hash confirmed. JWT generated and authenticated.,Passed,High,LOG-SEC-11
+WLW-DAT-012,Scan History & Bookmarks,Persist user scan results and toggle favorite bookmark status across sessions,Positive,User authenticated with valid JWT token. At least 1 scan record created.,"Scan ID: 1
+User: test_user_2026","1. Perform scan while authenticated to create record in scans table.
+2. Send POST to /api/favorites/1 with Authorization: Bearer <token>.
+3. Verify is_favorite toggles to true.
+4. Send GET to /api/favorites and verify scan appears in bookmarked list.",HTTP 200 OK. is_favorite toggled to true. Scan appears in GET /api/favorites list with risk score and product name.,HTTP 200 OK. Favorite bookmarked and verified in scan history list.,Passed,Medium,LOG-DAT-12
+WLW-INP-013,Input Sanitization,Sanitize noisy or comma-separated ingredient strings and isolate unknown tokens,Boundary / Robustness,Backend parser module active.,"Raw Input: 'Ingredients: Sugar, Refined Wheat Flour (Atta 40%), Palm Oil (Antioxidant 319), INS 102, UnknownHerb999.'","1. Submit unformatted raw OCR string to ingredient extraction parser.
+2. Verify stripping of 'Ingredients:' prefix and trailing punctuation.
+3. Check canonical mapping of INS 102 and Palm Oil.
+4. Verify 'UnknownHerb999' classified into unknown tokens array without crashing classifier.",Parsing strips extraneous noise. Known additives matched to FSSAI canonicals. 'UnknownHerb999' cleanly isolated in unknown array. Risk calculation adjusts confidence accordingly.,Sanitization clean. 4 recognized canonicals and 1 unknown token isolated.,Passed,Medium,LOG-INP-13
