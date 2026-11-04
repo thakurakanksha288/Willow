@@ -317,3 +317,4 @@ The test suite thoroughly validates all functional, non-functional, security, an
 1. **Zero Hallucination:** Strict null handling ensures Willow never fabricates nutritional metrics.
 2. **Robust Fault Tolerance:** Dual-tier architecture guarantees the application remains 100% operational even during external AI API outages.
 3. **Comprehensive End-to-End Safety:** From raw image quality to actionable healthier food swaps.
+

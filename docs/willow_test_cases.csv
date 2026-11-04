@@ -60,3 +60,4 @@ WLW-INP-013,Input Sanitization,Sanitize noisy or comma-separated ingredient stri
 2. Verify stripping of 'Ingredients:' prefix and trailing punctuation.
 3. Check canonical mapping of INS 102 and Palm Oil.
 4. Verify 'UnknownHerb999' classified into unknown tokens array without crashing classifier.",Parsing strips extraneous noise. Known additives matched to FSSAI canonicals. 'UnknownHerb999' cleanly isolated in unknown array. Risk calculation adjusts confidence accordingly.,Sanitization clean. 4 recognized canonicals and 1 unknown token isolated.,Passed,Medium,LOG-INP-13
+
