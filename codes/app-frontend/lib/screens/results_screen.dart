@@ -24,10 +24,47 @@ class _ResultsScreenState extends State<ResultsScreen> {
   final _scanner = IngredientScannerService();
   late bool _isFavorite;
 
+  // ── Gemini AI Analysis State ─────────────────────────────────────────────
+  GeminiProductAnalysis? _geminiAnalysis;
+  bool _geminiLoading = true;
+  bool _geminiError = false;
+
   @override
   void initState() {
     super.initState();
     _isFavorite = widget.analysis.isFavorite;
+    _loadGeminiAnalysis();
+  }
+
+  Future<void> _loadGeminiAnalysis() async {
+    final a = widget.analysis;
+    // Build a flat ingredient list from all known tokens
+    final ingredients = [
+      ...a.flagged.map((f) => f.rawToken.isNotEmpty ? f.rawToken : f.canonical),
+      ...a.clean.map((c) => c.rawToken.isNotEmpty ? c.rawToken : c.canonical),
+      ...a.unknown,
+    ].where((s) => s.isNotEmpty).toList();
+
+    if (ingredients.isEmpty) {
+      if (mounted) setState(() { _geminiLoading = false; _geminiError = true; });
+      return;
+    }
+
+    try {
+      final result = await _scanner.analyzeProduct(
+        ingredients: ingredients,
+        productName: a.productName,
+      );
+      if (mounted) {
+        setState(() {
+          _geminiAnalysis = result;
+          _geminiLoading = false;
+          _geminiError = result == null;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() { _geminiLoading = false; _geminiError = true; });
+    }
   }
 
   Future<void> _toggleFavorite() async {
@@ -412,6 +449,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                                 const SizedBox(height: 6),
                                 Text(
                                   a.offData?.aiInsight ??
+                                      _geminiAnalysis?.healthRecommendation ??
                                       (score >= 75
                                           ? 'Clean profile with minimal risk additives.'
                                           : (score >= 60
@@ -703,6 +741,10 @@ class _ResultsScreenState extends State<ResultsScreen> {
                     ),
                     const SizedBox(height: 16),
 
+                    // ── AI Safety Analysis (Gemini) ───────────────────────────
+                    _buildGeminiSection(),
+                    const SizedBox(height: 16),
+
                     // ── Score Methodology Link (Figma #2:2050) ───────────────
                     GestureDetector(
                       onTap: _showScoreMethodology,
@@ -835,6 +877,559 @@ class _ResultsScreenState extends State<ResultsScreen> {
         ),
       ),
     );
+  }
+
+  // ── Gemini AI Section Widget ─────────────────────────────────────────────
+
+  Widget _buildGeminiSection() {
+    // Loading state
+    if (_geminiLoading) {
+      return Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 28,
+                  height: 28,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFEDE9FF),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: const Icon(Icons.auto_awesome_rounded,
+                      color: AppTheme.primaryPurple, size: 15),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  'AI Safety Analysis',
+                  style: GoogleFonts.inter(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: AppTheme.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryPurple),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Analysing ingredients with Gemini AI…',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: AppTheme.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Error / unavailable state
+    if (_geminiError || _geminiAnalysis == null) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.cloud_off_rounded, color: AppTheme.textMuted, size: 20),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'AI analysis unavailable. Showing FSSAI ingredient data only.',
+                style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textSecondary),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final g = _geminiAnalysis!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // ── Header card ────────────────────────────────────────────
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.06),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 28,
+                    height: 28,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEDE9FF),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(Icons.auto_awesome_rounded,
+                        color: AppTheme.primaryPurple, size: 15),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'AI Safety Analysis',
+                      style: GoogleFonts.inter(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.textPrimary,
+                      ),
+                    ),
+                  ),
+                  // AI-powered badge
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: g.isAiPowered
+                          ? const Color(0xFFEDE9FF)
+                          : const Color(0xFFF5F5F5),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: Text(
+                      g.isAiPowered ? 'Gemini AI' : 'Local Fallback',
+                      style: GoogleFonts.inter(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: g.isAiPowered
+                            ? AppTheme.primaryPurple
+                            : AppTheme.textMuted,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              if (g.ingredientSummary.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(
+                  g.ingredientSummary,
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: AppTheme.textSecondary,
+                    height: 1.5,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+
+        // ── Harmful Ingredients Cards ───────────────────────────────
+        if (g.harmfulIngredients.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          ...g.harmfulIngredients.map((hi) => _buildHarmfulIngredientCard(hi)),
+        ] else ...[
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF0FFF4),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFB7EBC4)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.check_circle_outline_rounded,
+                    color: AppTheme.greenSuccess, size: 20),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'No significant harmful ingredients identified by AI analysis.',
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      color: AppTheme.greenDeep,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+
+        // ── Nutritional Assessment ──────────────────────────────────
+        const SizedBox(height: 12),
+        _buildNutritionalAssessmentCard(g.nutritionalAssessment),
+      ],
+    );
+  }
+
+  Widget _buildHarmfulIngredientCard(GeminiHarmfulIngredient hi) {
+    final riskColor = _riskColor(hi.riskLevel);
+    final riskBg = _riskBg(hi.riskLevel);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: riskBg),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: ExpansionTile(
+            tilePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+            childrenPadding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+            leading: Container(
+              width: 36,
+              height: 36,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: riskBg,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(Icons.warning_amber_rounded, color: riskColor, size: 18),
+            ),
+            title: Text(
+              hi.name,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: AppTheme.textPrimary,
+              ),
+            ),
+            subtitle: Row(
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(top: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: riskBg,
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: Text(
+                    '${hi.riskLevel} Risk',
+                    style: GoogleFonts.inter(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: riskColor,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF5F5F5),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: Text(
+                      hi.category,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.inter(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                        color: AppTheme.textSecondary,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            children: [
+              if (hi.explanation.isNotEmpty) ...[
+                Text(
+                  hi.explanation,
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: AppTheme.textSecondary,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 10),
+              ],
+              if (hi.potentialConcerns.isNotEmpty) ...[
+                Text(
+                  'Potential Concerns:',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                ...hi.potentialConcerns.map(
+                  (c) => Padding(
+                    padding: const EdgeInsets.only(bottom: 2),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('• ', style: TextStyle(color: riskColor)),
+                        Expanded(
+                          child: Text(
+                            c,
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              color: AppTheme.textSecondary,
+                              height: 1.4,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
+              if (hi.precautions.isNotEmpty) ...[
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF5E0),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(Icons.lightbulb_outline_rounded,
+                          color: Color(0xFFFFB800), size: 14),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          hi.precautions,
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            color: const Color(0xFFA06000),
+                            height: 1.4,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 4),
+              ],
+              if (hi.doseDependency)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.scale_rounded,
+                          size: 13, color: AppTheme.textMuted),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Concern is dose-dependent',
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          color: AppTheme.textMuted,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNutritionalAssessmentCard(GeminiNutritionalAssessment na) {
+    final ratingColor = _ratingColor(na.overallRating);
+    final ratingBg = _ratingBg(na.overallRating);
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                'Nutritional Assessment',
+                style: GoogleFonts.inter(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.textPrimary,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                decoration: BoxDecoration(
+                  color: ratingBg,
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Text(
+                  na.overallRating,
+                  style: GoogleFonts.inter(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: ratingColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (na.proteinAssessment.isNotEmpty)
+            _buildAssessmentRow(Icons.fitness_center_rounded, 'Protein', na.proteinAssessment),
+          if (na.sugarAssessment.isNotEmpty)
+            _buildAssessmentRow(Icons.local_cafe_rounded, 'Sugar', na.sugarAssessment),
+          if (na.fatAssessment.isNotEmpty)
+            _buildAssessmentRow(Icons.opacity_rounded, 'Fat', na.fatAssessment),
+          if (na.overallSummary.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            const Divider(color: Color(0xFFEEEEF5)),
+            const SizedBox(height: 8),
+            Text(
+              na.overallSummary,
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                color: AppTheme.textSecondary,
+                height: 1.5,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAssessmentRow(IconData icon, String label, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 14, color: AppTheme.primaryPurple),
+          const SizedBox(width: 8),
+          Text(
+            '$label: ',
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: AppTheme.textPrimary,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              text,
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                color: AppTheme.textSecondary,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Risk level colour helpers ─────────────────────────────────────────────
+
+  Color _riskColor(String level) {
+    switch (level.toLowerCase()) {
+      case 'high':
+        return AppTheme.redDanger;
+      case 'moderate':
+        return AppTheme.amberWarning;
+      default:
+        return AppTheme.greenSuccess;
+    }
+  }
+
+  Color _riskBg(String level) {
+    switch (level.toLowerCase()) {
+      case 'high':
+        return AppTheme.redSoftBg;
+      case 'moderate':
+        return AppTheme.amberSoftBg;
+      default:
+        return AppTheme.greenSoftBg;
+    }
+  }
+
+  Color _ratingColor(String rating) {
+    switch (rating.toLowerCase()) {
+      case 'good':
+        return AppTheme.greenSuccess;
+      case 'poor':
+        return AppTheme.redDanger;
+      default:
+        return AppTheme.amberWarning;
+    }
+  }
+
+  Color _ratingBg(String rating) {
+    switch (rating.toLowerCase()) {
+      case 'good':
+        return AppTheme.greenSoftBg;
+      case 'poor':
+        return AppTheme.redSoftBg;
+      default:
+        return AppTheme.amberSoftBg;
+    }
   }
 
   Widget _buildNutrientRow({

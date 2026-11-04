@@ -1,6 +1,154 @@
 /// Models for Willow Food Safety Scanner — includes Open Food Facts enrichment fields.
 library scan_model;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Gemini AI Analysis Models
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// A single ingredient flagged by Gemini with its risk assessment.
+class GeminiHarmfulIngredient {
+  final String name;
+  final String category;
+  final String riskLevel; // 'Low', 'Moderate', 'High'
+  final List<String> potentialConcerns;
+  final String explanation;
+  final bool doseDependency;
+  final String precautions;
+
+  GeminiHarmfulIngredient({
+    required this.name,
+    required this.category,
+    required this.riskLevel,
+    required this.potentialConcerns,
+    required this.explanation,
+    required this.doseDependency,
+    required this.precautions,
+  });
+
+  factory GeminiHarmfulIngredient.fromJson(Map<String, dynamic> json) {
+    return GeminiHarmfulIngredient(
+      name: json['name'] as String? ?? '',
+      category: json['category'] as String? ?? '',
+      riskLevel: json['risk_level'] as String? ?? 'Low',
+      potentialConcerns: List<String>.from(json['potential_concerns'] as List? ?? []),
+      explanation: json['explanation'] as String? ?? '',
+      doseDependency: json['dose_dependency'] == true,
+      precautions: json['precautions'] as String? ?? '',
+    );
+  }
+}
+
+/// Macronutrient data returned by Gemini (values are null when no label available).
+class GeminiMacronutrients {
+  final double? caloriesKcal;
+  final double? carbohydratesG;
+  final double? proteinG;
+  final double? totalFatG;
+  final double? saturatedFatG;
+  final double? transFatG;
+  final double? dietaryFibreG;
+  final double? totalSugarG;
+  final double? addedSugarG;
+  final String dataSource; // 'nutrition_label' | 'not_available'
+
+  GeminiMacronutrients({
+    this.caloriesKcal,
+    this.carbohydratesG,
+    this.proteinG,
+    this.totalFatG,
+    this.saturatedFatG,
+    this.transFatG,
+    this.dietaryFibreG,
+    this.totalSugarG,
+    this.addedSugarG,
+    required this.dataSource,
+  });
+
+  bool get hasData => caloriesKcal != null || totalFatG != null || proteinG != null;
+
+  factory GeminiMacronutrients.fromJson(Map<String, dynamic> json) {
+    double? parse(dynamic v) => v == null ? null : double.tryParse(v.toString());
+    return GeminiMacronutrients(
+      caloriesKcal: parse(json['calories_kcal']),
+      carbohydratesG: parse(json['carbohydrates_g']),
+      proteinG: parse(json['protein_g']),
+      totalFatG: parse(json['total_fat_g']),
+      saturatedFatG: parse(json['saturated_fat_g']),
+      transFatG: parse(json['trans_fat_g']),
+      dietaryFibreG: parse(json['dietary_fibre_g']),
+      totalSugarG: parse(json['total_sugar_g']),
+      addedSugarG: parse(json['added_sugar_g']),
+      dataSource: json['data_source'] as String? ?? 'not_available',
+    );
+  }
+}
+
+/// Holistic nutritional assessment from Gemini.
+class GeminiNutritionalAssessment {
+  final String overallRating; // 'Good', 'Moderate', 'Poor', 'Unrated'
+  final String proteinAssessment;
+  final String sugarAssessment;
+  final String fatAssessment;
+  final String overallSummary;
+
+  GeminiNutritionalAssessment({
+    required this.overallRating,
+    required this.proteinAssessment,
+    required this.sugarAssessment,
+    required this.fatAssessment,
+    required this.overallSummary,
+  });
+
+  factory GeminiNutritionalAssessment.fromJson(Map<String, dynamic> json) {
+    return GeminiNutritionalAssessment(
+      overallRating: json['overall_rating'] as String? ?? 'Unrated',
+      proteinAssessment: json['protein_assessment'] as String? ?? '',
+      sugarAssessment: json['sugar_assessment'] as String? ?? '',
+      fatAssessment: json['fat_assessment'] as String? ?? '',
+      overallSummary: json['overall_summary'] as String? ?? '',
+    );
+  }
+}
+
+/// Full Gemini AI product analysis wrapping all sub-models.
+class GeminiProductAnalysis {
+  final String status; // 'success' | 'fallback'
+  final List<GeminiHarmfulIngredient> harmfulIngredients;
+  final GeminiMacronutrients macronutrients;
+  final GeminiNutritionalAssessment nutritionalAssessment;
+  final String ingredientSummary;
+  final String healthRecommendation;
+
+  GeminiProductAnalysis({
+    required this.status,
+    required this.harmfulIngredients,
+    required this.macronutrients,
+    required this.nutritionalAssessment,
+    required this.ingredientSummary,
+    required this.healthRecommendation,
+  });
+
+  bool get isAiPowered => status == 'success';
+
+  factory GeminiProductAnalysis.fromJson(Map<String, dynamic> json) {
+    final pa = json['product_analysis'] as Map<String, dynamic>? ?? {};
+    final hiList = (pa['harmful_ingredients'] as List? ?? [])
+        .map((e) => GeminiHarmfulIngredient.fromJson(e as Map<String, dynamic>))
+        .toList();
+    final macroJson = pa['macronutrients'] as Map<String, dynamic>? ?? {};
+    final assessJson = pa['nutritional_assessment'] as Map<String, dynamic>? ?? {};
+
+    return GeminiProductAnalysis(
+      status: json['status'] as String? ?? 'fallback',
+      harmfulIngredients: hiList,
+      macronutrients: GeminiMacronutrients.fromJson(macroJson),
+      nutritionalAssessment: GeminiNutritionalAssessment.fromJson(assessJson),
+      ingredientSummary: pa['ingredient_summary'] as String? ?? '',
+      healthRecommendation: pa['health_recommendation'] as String? ?? '',
+    );
+  }
+}
+
 class FlaggedIngredient {
   final String canonical;
   final String riskLevel; // 'high' or 'watch'
@@ -53,11 +201,23 @@ class AlternativeSwap {
   final String price;
   final String? note;
 
+  // Rich Gemini AI-powered fields
+  final String? brand;
+  final String? whyHealthier;
+  final List<String> avoidedIngredients;
+  final List<String> keyBenefits;
+  final String? swapType; // 'Packaged Brand', 'Whole Food Alternative', 'Clean Label'
+
   AlternativeSwap({
     required this.name,
     required this.score,
     required this.price,
     this.note,
+    this.brand,
+    this.whyHealthier,
+    this.avoidedIngredients = const [],
+    this.keyBenefits = const [],
+    this.swapType,
   });
 
   factory AlternativeSwap.fromJson(Map<String, dynamic> json) {
@@ -66,6 +226,50 @@ class AlternativeSwap {
       score: json['score'] is int ? json['score'] : int.tryParse(json['score'].toString()) ?? 75,
       price: json['price'] ?? '',
       note: json['note'],
+      brand: json['brand'],
+      whyHealthier: json['why_healthier'] ?? json['note'],
+      avoidedIngredients: List<String>.from(json['avoided_ingredients'] ?? []),
+      keyBenefits: List<String>.from(json['key_benefits'] ?? []),
+      swapType: json['swap_type'],
+    );
+  }
+}
+
+class AiAlternativesResult {
+  final String status;
+  final String productName;
+  final String category;
+  final int? currentScore;
+  final String summary;
+  final List<AlternativeSwap> alternatives;
+  final List<String> groceryTips;
+
+  AiAlternativesResult({
+    required this.status,
+    required this.productName,
+    required this.category,
+    this.currentScore,
+    required this.summary,
+    required this.alternatives,
+    required this.groceryTips,
+  });
+
+  bool get isAiPowered => status == 'success';
+
+  factory AiAlternativesResult.fromJson(Map<String, dynamic> json) {
+    final rawAlts = json['alternatives'] as List? ?? [];
+    return AiAlternativesResult(
+      status: json['status'] as String? ?? 'fallback',
+      productName: json['product_name'] as String? ?? '',
+      category: json['category'] as String? ?? '',
+      currentScore: json['current_score'] is int
+          ? json['current_score']
+          : int.tryParse(json['current_score']?.toString() ?? ''),
+      summary: json['summary'] as String? ?? '',
+      alternatives: rawAlts
+          .map((a) => AlternativeSwap.fromJson(a as Map<String, dynamic>))
+          .toList(),
+      groceryTips: List<String>.from(json['grocery_tips'] as List? ?? []),
     );
   }
 }

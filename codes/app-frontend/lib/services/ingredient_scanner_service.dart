@@ -280,4 +280,81 @@ class IngredientScannerService {
       return [];
     }
   }
+
+  /// Gemini AI ingredient safety and nutritional analysis.
+  ///
+  /// Calls POST /api/analyze-product with the ingredient list and optional
+  /// nutrition label data. Returns null on error so callers can gracefully
+  /// fall back to the FSSAI-based analysis already in [ProductAnalysis].
+  Future<GeminiProductAnalysis?> analyzeProduct({
+    required List<String> ingredients,
+    Map<String, dynamic>? nutritionData,
+    String? productName,
+  }) async {
+    if (ingredients.isEmpty) return null;
+    try {
+      final uri = Uri.parse('$baseUrl/api/analyze-product');
+      final body = <String, dynamic>{
+        'ingredients': ingredients,
+        'nutrition_data': nutritionData,
+      };
+      if (productName != null && productName.isNotEmpty) {
+        body['product_name'] = productName;
+      }
+      final res = await http.post(
+        uri,
+        headers: _headers(),
+        body: jsonEncode(body),
+      );
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        return GeminiProductAnalysis.fromJson(data);
+      }
+      debugPrint('analyzeProduct HTTP error: ${res.statusCode} ${res.body}');
+      return null;
+    } catch (e) {
+      debugPrint('analyzeProduct exception: $e');
+      return null;
+    }
+  }
+
+  /// Generate intelligent, Gemini AI-powered healthier food alternatives and swaps.
+  ///
+  /// Calls POST /api/ai-alternatives with product details, original ingredients,
+  /// current health score, and flagged additives.
+  Future<AiAlternativesResult?> getAiAlternatives({
+    required String productName,
+    String? category,
+    List<String>? ingredients,
+    int? currentScore,
+    List<String>? flaggedIngredients,
+  }) async {
+    try {
+      final uri = Uri.parse('$baseUrl/api/ai-alternatives');
+      final body = <String, dynamic>{
+        'product_name': productName,
+        if (category != null && category.isNotEmpty) 'category': category,
+        if (ingredients != null && ingredients.isNotEmpty) 'ingredients': ingredients,
+        if (currentScore != null) 'current_score': currentScore,
+        if (flaggedIngredients != null && flaggedIngredients.isNotEmpty)
+          'flagged_ingredients': flaggedIngredients,
+      };
+
+      final res = await http.post(
+        uri,
+        headers: _headers(),
+        body: jsonEncode(body),
+      );
+
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        return AiAlternativesResult.fromJson(data);
+      }
+      debugPrint('getAiAlternatives HTTP error: ${res.statusCode} ${res.body}');
+      return null;
+    } catch (e) {
+      debugPrint('getAiAlternatives exception: $e');
+      return null;
+    }
+  }
 }
