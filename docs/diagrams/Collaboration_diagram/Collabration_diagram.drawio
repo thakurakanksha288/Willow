@@ -1,0 +1,247 @@
+<mxfile host="app.diagrams.net" modified="2026-11-07T07:30:00.000Z" agent="ChatGPT" version="24.7.17" type="device">
+  <diagram id="willow-clear-large" name="Willow Collaboration Diagram">
+    <mxGraphModel dx="2200" dy="1600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1550" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="WILLOW — UML COLLABORATION DIAGRAM" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=30;fontColor=#142B50;" vertex="1" parent="1">
+          <mxGeometry x="300" y="20" width="1600" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Large-format communication diagram  |  Numbered messages  |  Solid = request  |  Dashed = response" style="text;html=1;align=center;verticalAlign=middle;fontSize=16;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="300" y="78" width="1600" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="band1" value="1. INPUT &amp; OCR EXTRACTION" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingTop=14;spacingLeft=20;fontStyle=1;fontSize=19;fillColor=#F1F6FF;strokeColor=#83AEEB;strokeWidth=2;fontColor=#17365D;" vertex="1" parent="1">
+          <mxGeometry x="35" y="135" width="2130" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="band2" value="2. INGREDIENT IDENTIFICATION &amp; RISK ANALYSIS" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingTop=14;spacingLeft=20;fontStyle=1;fontSize=19;fillColor=#F0FAF5;strokeColor=#80C5A5;strokeWidth=2;fontColor=#174B37;" vertex="1" parent="1">
+          <mxGeometry x="35" y="465" width="2130" height="440" as="geometry" />
+        </mxCell>
+        <mxCell id="band3" value="3. CATEGORY FALLBACK, ALTERNATIVES &amp; RESULTS" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingTop=14;spacingLeft=20;fontStyle=1;fontSize=19;fillColor=#F6F3FF;strokeColor=#A997D8;strokeWidth=2;fontColor=#38265C;" vertex="1" parent="1">
+          <mxGeometry x="35" y="935" width="2130" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="user" value="user: User / Consumer" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=18;strokeWidth=2.5;fillColor=#FCE8EE;strokeColor=#B94D70;fontColor=#54263A;" vertex="1" parent="1">
+          <mxGeometry x="100" y="245" width="300" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="willow" value="willow: Willow Main System" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;strokeWidth=3;fillColor=#DCE9FF;strokeColor=#4779BD;fontColor=#18365D;" vertex="1" parent="1">
+          <mxGeometry x="850" y="235" width="430" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="vision" value="vision: External OCR / Vision Provider" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=18;strokeWidth=2.5;fillColor=#FCE8EE;strokeColor=#B94D70;fontColor=#54263A;" vertex="1" parent="1">
+          <mxGeometry x="1740" y="245" width="340" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="m1" value="1. uploadProductPhoto()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#142B50;strokeWidth=2.3;fontSize=15;fontStyle=1;fontColor=#142B50;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="user" target="willow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="600" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m2" value="2. validatePhoto()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#142B50;strokeWidth=2.3;fontSize=15;fontStyle=1;fontColor=#142B50;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="willow" target="willow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1325" y="210" />
+              <mxPoint x="1325" y="365" />
+              <mxPoint x="1285" y="365" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m5" value="5. requestExtraction()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#142B50;strokeWidth=2.3;fontSize=15;fontStyle=1;fontColor=#142B50;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="willow" target="vision">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1500" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m6" value="6. returnOCRText()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;dashed=1;strokeColor=#64748B;strokeWidth=2.2;fontSize=15;fontStyle=1;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="vision" target="willow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1680" y="390" />
+              <mxPoint x="1450" y="390" />
+              <mxPoint x="1450" y="365" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m3" value="3. saveValidatedImage(D5)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#142B50;strokeWidth=2.3;fontSize=15;fontStyle=1;fontColor=#142B50;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="willow" target="willow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1320" y="375" />
+              <mxPoint x="1380" y="375" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m4" value="4. database acknowledgement" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;dashed=1;strokeColor=#64748B;strokeWidth=2.2;fontSize=15;fontStyle=1;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="willow" target="willow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1380" y="410" />
+              <mxPoint x="1320" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m10" value="10. requestRetake() — low OCR confidence" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;dashed=1;strokeColor=#64748B;strokeWidth=2.2;fontSize=15;fontStyle=1;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="willow" target="user">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="700" y="405" />
+              <mxPoint x="450" y="405" />
+              <mxPoint x="450" y="320" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="alias" value="alias: IngredientAlias" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=17;strokeWidth=2.3;fillColor=#DDF4E7;strokeColor=#23865D;fontColor=#164B35;" vertex="1" parent="1">
+          <mxGeometry x="100" y="650" width="300" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="ingredient" value="ingredient: Ingredient" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=17;strokeWidth=2.3;fillColor=#DDF4E7;strokeColor=#23865D;fontColor=#164B35;" vertex="1" parent="1">
+          <mxGeometry x="530" y="650" width="310" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="risk" value="riskLevel: RiskLevel&lt;br&gt;LOW / MEDIUM / HIGH" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=17;strokeWidth=2.3;fillColor=#EEE7FF;strokeColor=#8062BD;fontColor=#39265D;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="650" width="310" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="db" value="db: Database&lt;br&gt;D1 – D5" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;size=18;align=center;verticalAlign=middle;fontStyle=1;fontSize=17;strokeWidth=2.3;fillColor=#FFE8A8;strokeColor=#C18A18;fontColor=#553B0A;" vertex="1" parent="1">
+          <mxGeometry x="1510" y="630" width="220" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="category" value="category: Category" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=17;strokeWidth=2.3;fillColor=#DDF4E7;strokeColor=#23865D;fontColor=#164B35;" vertex="1" parent="1">
+          <mxGeometry x="1840" y="650" width="270" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="m7" value="7. parseAndNormalizeIngredients()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#142B50;strokeWidth=2.3;fontSize=15;fontStyle=1;fontColor=#142B50;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="willow" target="alias">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="780" y="395" />
+              <mxPoint x="250" y="395" />
+              <mxPoint x="250" y="625" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m8" value="8. findByAliasName()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#142B50;strokeWidth=2.3;fontSize=15;fontStyle=1;fontColor=#142B50;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="alias" target="ingredient">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m9" value="9. resolveIngredient()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;dashed=1;strokeColor=#64748B;strokeWidth=2.2;fontSize=15;fontStyle=1;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="ingredient" target="alias">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="790" />
+              <mxPoint x="430" y="790" />
+              <mxPoint x="430" y="730" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m12" value="12. canonical names / aliases" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;dashed=1;strokeColor=#64748B;strokeWidth=2.2;fontSize=15;fontStyle=1;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="db" target="ingredient">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1460" y="805" />
+              <mxPoint x="685" y="805" />
+              <mxPoint x="685" y="760" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m13" value="13. getRiskLevel()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#142B50;strokeWidth=2.3;fontSize=15;fontStyle=1;fontColor=#142B50;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="ingredient" target="risk">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m13r" value="13.2 returnRiskLevel()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;dashed=1;strokeColor=#64748B;strokeWidth=2.2;fontSize=15;fontStyle=1;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="risk" target="ingredient">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="960" y="785" />
+              <mxPoint x="880" y="785" />
+              <mxPoint x="880" y="730" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m11" value="11. fetchCategoryRules(D2)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#142B50;strokeWidth=2.3;fontSize=15;fontStyle=1;fontColor=#142B50;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="willow" target="db">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1400" y="395" />
+              <mxPoint x="1620" y="395" />
+              <mxPoint x="1620" y="610" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m14" value="14. getCategory()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#142B50;strokeWidth=2.3;fontSize=15;fontStyle=1;fontColor=#142B50;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="willow" target="category">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1450" y="420" />
+              <mxPoint x="1975" y="420" />
+              <mxPoint x="1975" y="625" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="profile" value="riskProfile: CategoryRiskProfile" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=17;strokeWidth=2.3;fillColor=#DDF4E7;strokeColor=#23865D;fontColor=#164B35;" vertex="1" parent="1">
+          <mxGeometry x="250" y="1045" width="420" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="alternative" value="alternative: ProductAlternative" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=17;strokeWidth=2.3;fillColor=#DDF4E7;strokeColor=#23865D;fontColor=#164B35;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="1045" width="430" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="m16" value="16. getRiskProfile() — fallback" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#142B50;strokeWidth=2.3;fontSize=15;fontStyle=1;fontColor=#142B50;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="category" target="profile">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1980" y="900" />
+              <mxPoint x="460" y="900" />
+              <mxPoint x="460" y="1025" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m17" value="17. estimatedRiskProfile()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;dashed=1;strokeColor=#64748B;strokeWidth=2.2;fontSize=15;fontStyle=1;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="profile" target="willow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="220" y="1185" />
+              <mxPoint x="75" y="1185" />
+              <mxPoint x="75" y="420" />
+              <mxPoint x="830" y="420" />
+              <mxPoint x="830" y="350" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m18" value="18. findBySubCategoryName()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#142B50;strokeWidth=2.3;fontSize=15;fontStyle=1;fontColor=#142B50;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="category" target="alternative">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1980" y="875" />
+              <mxPoint x="1540" y="875" />
+              <mxPoint x="1540" y="1025" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m19" value="19. matching alternative products" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;dashed=1;strokeColor=#64748B;strokeWidth=2.2;fontSize=15;fontStyle=1;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="alternative" target="willow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1280" y="1190" />
+              <mxPoint x="1120" y="1190" />
+              <mxPoint x="1120" y="430" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m20" value="20. analysisResult() — exact or estimated" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;dashed=1;strokeColor=#64748B;strokeWidth=2.2;fontSize=15;fontStyle=1;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="willow" target="user">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="820" y="435" />
+              <mxPoint x="55" y="435" />
+              <mxPoint x="55" y="295" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m21" value="21. submitKnownIngredients() — manual entry" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#142B50;strokeWidth=2.3;fontSize=15;fontStyle=1;fontColor=#142B50;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="user" target="willow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="450" y="225" />
+              <mxPoint x="820" y="225" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m22" value="22. rerun parsing + risk analysis" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#142B50;strokeWidth=2.3;fontSize=15;fontStyle=1;fontColor=#142B50;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="willow" target="willow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1325" y="435" />
+              <mxPoint x="1360" y="435" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sc1" value="&lt;b&gt;SCENARIO 1 — Ingredient list detected&lt;/b&gt;&lt;br&gt;Flow: 1 → 16 / 20&lt;br&gt;Output: Ingredient-level analysis, risk levels and alternatives" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=12;fontSize=15;fillColor=#FFF2E5;strokeColor=#E9A94F;fontColor=#49321A;" vertex="1" parent="1">
+          <mxGeometry x="45" y="1270" width="650" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="sc2" value="&lt;b&gt;SCENARIO 2 — No ingredient list detected&lt;/b&gt;&lt;br&gt;Flow: 17 → 20&lt;br&gt;Output: Category-based estimated risk profile (not exact)" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=12;fontSize=15;fillColor=#F0E9FF;strokeColor=#A68BD9;fontColor=#38265C;" vertex="1" parent="1">
+          <mxGeometry x="775" y="1270" width="650" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="sc3" value="&lt;b&gt;SCENARIO 3 — Manual ingredient entry&lt;/b&gt;&lt;br&gt;Flow: 21 → 22&lt;br&gt;Output: Analysis rerun using user-provided ingredients" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=12;fontSize=15;fillColor=#EAF8EC;strokeColor=#8BC69A;fontColor=#234A2D;" vertex="1" parent="1">
+          <mxGeometry x="1505" y="1270" width="650" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" value="&lt;b&gt;ARROW KEY&lt;/b&gt;     Solid arrow  →  Request / method call       Dashed arrow  ⇢  Response / return message       Rounded loop  ↻  Internal self-message       Grey dotted line  ···  Class association" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=16;fillColor=#F1F6FB;strokeColor=#B7C9DD;strokeWidth=1.5;fontColor=#263B55;" vertex="1" parent="1">
+          <mxGeometry x="160" y="1400" width="1880" height="65" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
