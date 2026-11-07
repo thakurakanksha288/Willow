@@ -1,0 +1,126 @@
+<mxfile host="app.diagrams.net" modified="2026-11-07T04:45:00.000Z" agent="ChatGPT" version="24.7.17" type="device">
+  <diagram id="willow-deployment" name="Willow Deployment Diagram">
+    <mxGraphModel dx="1500" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="WILLOW — UML DEPLOYMENT DIAGRAM" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=25;fontColor=#183153;" vertex="1" parent="1">
+          <mxGeometry x="300" y="20" width="900" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Physical deployment view of the food-product scanning and ingredient-analysis system" style="text;html=1;align=center;verticalAlign=middle;fontSize=13;fontColor=#526174;" vertex="1" parent="1">
+          <mxGeometry x="250" y="65" width="1000" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="client_node" value="«device»&lt;br&gt;&lt;b&gt;User Device&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:11px'&gt;Laptop / Mobile / Tablet&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=top;spacingTop=10;fontStyle=1;fontSize=15;fillColor=#F4F7FB;strokeColor=#5477B8;strokeWidth=2;fontColor=#1E3554;" vertex="1" parent="1">
+          <mxGeometry x="55" y="190" width="285" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="browser" value="«execution environment»&lt;br&gt;&lt;b&gt;Web Browser&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontStyle=1;fillColor=#FFF4DF;strokeColor=#C89B3C;strokeWidth=1.8;fontColor=#594313;" vertex="1" parent="1">
+          <mxGeometry x="90" y="270" width="215" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="ui" value="«artifact»&lt;br&gt;&lt;b&gt;Willow User Interface&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:11px'&gt;Product image upload • Results display • Manual entry&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=13;fillColor=#E7F0FF;strokeColor=#5684C5;strokeWidth=1.6;fontColor=#17365D;" vertex="1" parent="1">
+          <mxGeometry x="85" y="370" width="225" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="app_node" value="«node»&lt;br&gt;&lt;b&gt;Willow Application Server&lt;/b&gt;" style="shape=mxgraph.c4.deployment_node;whiteSpace=wrap;html=1;boundedLbl=1;align=center;verticalAlign=top;spacingTop=12;fontStyle=1;fontSize=15;fillColor=#F4F7FB;strokeColor=#5477B8;strokeWidth=2;fontColor=#1E3554;" vertex="1" parent="1">
+          <mxGeometry x="445" y="155" width="440" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend" value="«artifact / component»&lt;br&gt;&lt;b&gt;Web Application&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:11px'&gt;UI routing • Scan request • Result rendering&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=13;fillColor=#E7F0FF;strokeColor=#5684C5;strokeWidth=1.6;fontColor=#17365D;" vertex="1" parent="1">
+          <mxGeometry x="500" y="240" width="330" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="backend" value="«execution environment / component»&lt;br&gt;&lt;b&gt;Willow Backend&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:11px'&gt;Image validation • Workflow coordination • API endpoints&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=13;fillColor=#E7F0FF;strokeColor=#5684C5;strokeWidth=1.6;fontColor=#17365D;" vertex="1" parent="1">
+          <mxGeometry x="500" y="350" width="330" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="analysis" value="«component»&lt;br&gt;&lt;b&gt;Ingredient Analysis Module&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:11px'&gt;OCR text parsing • Alias matching • Risk evaluation • Alternatives&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=13;fillColor=#E7F0FF;strokeColor=#5684C5;strokeWidth=1.6;fontColor=#17365D;" vertex="1" parent="1">
+          <mxGeometry x="500" y="465" width="330" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="db_node" value="«node»&lt;br&gt;&lt;b&gt;Database Server&lt;/b&gt;" style="shape=mxgraph.c4.deployment_node;whiteSpace=wrap;html=1;boundedLbl=1;align=center;verticalAlign=top;spacingTop=12;fontStyle=1;fontSize=15;fillColor=#F4F7FB;strokeColor=#5477B8;strokeWidth=2;fontColor=#1E3554;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="180" width="390" height="350" as="geometry" />
+        </mxCell>
+        <mxCell id="db" value="«database»&lt;br&gt;&lt;b&gt;Willow Database&lt;/b&gt;" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;size=15;align=center;verticalAlign=middle;fontSize=13;fillColor=#E8F6EF;strokeColor=#329875;strokeWidth=1.7;fontColor=#174B37;" vertex="1" parent="1">
+          <mxGeometry x="1075" y="265" width="260" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="tables" value="«data stores»&lt;br&gt;&lt;b&gt;Logical data groups&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:11px'&gt;D1 — Ingredient aliases&lt;br&gt;D2 — Category risk rules / profiles&lt;br&gt;D3 — Category profiles&lt;br&gt;D4 — Product alternatives&lt;br&gt;D5 — Validated image records&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=13;fillColor=#E7F0FF;strokeColor=#5684C5;strokeWidth=1.6;fontColor=#17365D;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="390" width="290" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="ocr_node" value="«external service»&lt;br&gt;&lt;b&gt;OCR / Vision Provider&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=13;fillColor=#FFF1EF;strokeColor=#C96B62;strokeWidth=1.7;fontColor=#512B28;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="650" width="390" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="ocr_api" value="«API endpoint»&lt;br&gt;&lt;b&gt;Image-to-text / OCR service&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:11px'&gt;Receives image or image reference&lt;br&gt;Returns extracted text / confidence&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=13;fillColor=#E7F0FF;strokeColor=#5684C5;strokeWidth=1.6;fontColor=#17365D;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="720" width="290" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="network" value="«communication path»&lt;br&gt;&lt;b&gt;HTTPS / Internet&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=14;fillColor=#F1EDFA;strokeColor=#8064B5;strokeWidth=1.8;fontColor=#38265C;" vertex="1" parent="1">
+          <mxGeometry x="475" y="690" width="350" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="client_to_app" value="HTTPS: open Willow application" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#35516F;strokeWidth=1.7;fontSize=12;fontColor=#1E344D;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="ui" target="frontend">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="375" y="410" />
+              <mxPoint x="375" y="275" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ui_backend" value="API request: upload / manual entry" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#35516F;strokeWidth=1.7;fontSize=12;fontColor=#1E344D;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="frontend" target="backend">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="backend_analysis" value="validated image + extracted text" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#35516F;strokeWidth=1.7;fontSize=12;fontColor=#1E344D;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="backend" target="analysis">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="app_db" value="Database queries / updates" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#35516F;strokeWidth=1.7;fontSize=12;fontColor=#1E344D;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="backend" target="db">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="900" y="390" />
+              <mxPoint x="950" y="390" />
+              <mxPoint x="950" y="305" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="db_app" value="Ingredient, category, risk and alternative data" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#73849A;strokeWidth=1.5;fontSize=12;fontColor=#46566B;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="db" target="analysis">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="965" y="500" />
+              <mxPoint x="920" y="500" />
+              <mxPoint x="920" y="505" />
+              <mxPoint x="850" y="505" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="analysis_backend" value="Analysis result" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#73849A;strokeWidth=1.5;fontSize=12;fontColor=#46566B;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="analysis" target="backend">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="backend_ocr" value="HTTPS API: image extraction request" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#35516F;strokeWidth=1.7;fontSize=12;fontColor=#1E344D;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="backend" target="ocr_api">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="900" y="405" />
+              <mxPoint x="930" y="405" />
+              <mxPoint x="930" y="760" />
+              <mxPoint x="1045" y="760" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ocr_backend" value="OCR text + confidence response" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#73849A;strokeWidth=1.5;fontSize=12;fontColor=#46566B;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="ocr_api" target="backend">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1030" y="820" />
+              <mxPoint x="915" y="820" />
+              <mxPoint x="915" y="420" />
+              <mxPoint x="850" y="420" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="backend_ui" value="Display analysis / retake request" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;dashed=1;strokeColor=#73849A;strokeWidth=1.5;fontSize=12;fontColor=#46566B;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="backend" target="ui">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="420" y="455" />
+              <mxPoint x="420" y="430" />
+              <mxPoint x="325" y="430" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="note1" value="&lt;b&gt;Deployment assumptions&lt;/b&gt;&lt;br&gt;This is a technology-neutral deployment view based on the supplied Willow class and sequence diagrams. Specific framework, cloud host, database product and OCR vendor are intentionally not guessed." style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=9;fontSize=12;fillColor=#FFFBEA;strokeColor=#D8B85A;fontColor=#5B4A1B;" vertex="1" parent="1">
+          <mxGeometry x="55" y="875" width="650" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="note2" value="&lt;b&gt;Runtime flow&lt;/b&gt;&lt;br&gt;1. User uploads an image or enters ingredients.&lt;br&gt;2. Willow validates and processes the request.&lt;br&gt;3. OCR provider returns extracted text when needed.&lt;br&gt;4. Backend queries the database for aliases, category risk profiles and alternatives.&lt;br&gt;5. Willow returns the analysis to the user." style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=9;fontSize=12;fillColor=#FFFBEA;strokeColor=#D8B85A;fontColor=#5B4A1B;" vertex="1" parent="1">
+          <mxGeometry x="760" y="875" width="640" height="90" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
